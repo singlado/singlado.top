@@ -1,0 +1,31 @@
+---
+// A full-width alternating feature section (Stripe/Linear style).
+// Text on one side, a visual slot on the other; alternates by `flip`.
+export interface Props {
+  eyebrow: string;
+  title: string;
+  body: string;
+  flip?: boolean;
+}
+const { eyebrow, title, body, flip = false } = Astro.props;
+---
+
+<section class="relative max-w-7xl mx-auto px-6 py-20 md:py-28">
+  <div class={`grid md:grid-cols-2 gap-10 md:gap-16 items-center ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
+    <!-- TEXT -->
+    <div data-reveal>
+      <span class="text-brand-light font-semibold text-[13px] tracking-[0.2em] uppercase">{eyebrow}</span>
+      <h2 class="mt-4 text-3xl md:text-5xl font-black text-white tracking-tight leading-[1.08]">
+        <Fragment set:html={title} />
+      </h2>
+      <p class="mt-5 text-neutral-400 text-lg leading-relaxed max-w-md">{body}</p>
+    </div>
+    <!-- VISUAL -->
+    <div data-reveal class="relative">
+      <div class="absolute -inset-8 bg-brand/10 blur-3xl rounded-full" aria-hidden="true"></div>
+      <div class="relative">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>
