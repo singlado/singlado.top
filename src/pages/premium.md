@@ -1,32 +1,32 @@
 ---
 layout: ../layouts/Prose.astro
 title: Premium
-subtitle: Pay once. No subscriptions.
+subtitle: One purchase, no recurring fee.
 ---
 
-We don't believe in renting you your own music.
+We didn't want to charge you rent for your own music.
 
-## The pledge
-Singlado's Premium is a **one-time purchase**. No monthly fee, no annual plan,
-no auto-renew. You buy it once and it stays unlocked.
+## How it works
+Premium is a single purchase. There's no monthly fee, no annual plan, nothing
+that renews on its own. You buy it once and it stays unlocked on your account.
 
-## What's free
-The free version is **fully functional**: search, playback, queue, shuffle,
-repeat, autoplay, favorites, playlists, history and account sync. You can use
-Singlado completely for free — it's ad-supported.
+## What you get for free
+Quite a lot, actually. Search, playback, the queue, shuffle, repeat, autoplay,
+favorites, playlists, history and account sync all work in the free version. It's
+supported by ads, and you can use it that way indefinitely.
 
-## What Premium adds
-- **Removes ads** — an uninterrupted, ad-free experience.
+## What Premium changes
+- **No more ads.** That's it. An uninterrupted listen.
 
-That's the deal: **pay once, remove the ads, keep it.**
+So the whole deal is: pay once, the ads go away, and it's yours.
 
-## Why one-time instead of a subscription
-Subscriptions make sense for a company that licenses a huge catalog and pays
-rights holders every month. Singlado is a **player you bring your own sources
-to** — there's no catalog to rent you. So charging a recurring fee would be
-charging you rent on software you already own. A single unlock is the honest
-model.
+## Why not a subscription
+Subscriptions make sense when a company licenses a giant catalog and owes rights
+holders every month. That's not us. Singlado is a player you point at your own
+sources, so there's no catalog to rent you. Charging monthly would mean charging
+rent on an app you already paid for, which never sat right with us. A one-time
+unlock felt like the honest way to do it.
 
-## How to buy
-Open Singlado, go to **Premium** in the menu, and complete the one-time purchase
-through Google Play. Your unlock is tied to your account.
+## Buying it
+Open Singlado, find **Premium** in the menu, and complete the purchase through
+Google Play. The unlock is tied to your account.
