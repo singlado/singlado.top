@@ -17,17 +17,18 @@ import FeatureRow from '../components/FeatureRow.astro';
       <div>
         <span class="inline-flex items-center gap-2 text-[13px] font-medium text-neutral-300 bg-white/5 border border-white/10 rounded-full px-3.5 py-1.5 mb-8 backdrop-blur animate-fade-up">
           <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
-          Now on Android · no subscriptions
+          Now on Android
         </span>
 
         <h1 class="text-[3.5rem] sm:text-7xl lg:text-[5.5rem] font-black tracking-[-0.03em] text-white leading-[0.95] animate-fade-up">
-          The <span class="text-gradient">universal</span>
-          <br />music player.
+          One player for
+          <br />all your <span class="text-gradient">music</span>.
         </h1>
 
         <p class="mt-7 text-xl text-neutral-400 max-w-lg leading-relaxed animate-fade-up">
-          One player for every source — you bring your own, through native
-          plugins. <span class="text-white font-medium">Pay once. No subscriptions, ever.</span>
+          Singlado doesn't come with a catalog. You decide where your music comes
+          from and add those sources yourself, through plugins. And Premium is a
+          single purchase, not another monthly bill.
         </p>
 
         <div class="mt-9 flex flex-wrap gap-4 animate-fade-up">
@@ -38,7 +39,7 @@ import FeatureRow from '../components/FeatureRow.astro';
           </a>
           <a href="/plugins"
              class="rounded-full text-neutral-300 hover:text-white font-semibold px-6 py-4 transition-colors">
-            See how plugins work ↓
+            How plugins work ↓
           </a>
         </div>
       </div>
@@ -57,7 +58,9 @@ import FeatureRow from '../components/FeatureRow.astro';
   <!-- ================= TRUST LINE ================= -->
   <section class="border-y border-white/5">
     <div class="max-w-7xl mx-auto px-6 py-10 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-center" data-reveal>
-      <p class="text-neutral-500 text-sm">A player that's <span class="text-white font-medium">yours</span> — open to any source, owned not rented.</p>
+      <p class="text-white font-bold tracking-tight text-base md:text-lg leading-snug max-w-xl">
+        The player is <span class="text-gradient">yours.</span> Own it, don't rent it.
+      </p>
       <div class="flex items-center gap-10 text-neutral-400 text-sm">
         <span><b class="text-white text-lg">0</b> subscriptions</span>
         <span><b class="text-gradient text-lg">∞</b> sources via plugins</span>
@@ -66,11 +69,55 @@ import FeatureRow from '../components/FeatureRow.astro';
     </div>
   </section>
 
+  <!-- ================= SCREENSHOT GALLERY ================= -->
+  <section class="relative max-w-7xl mx-auto px-6 py-24">
+    <div class="text-center mb-14" data-reveal>
+      <span class="text-brand-light font-semibold text-[13px] tracking-[0.2em] uppercase">A look inside</span>
+      <h2 class="mt-4 text-3xl md:text-5xl font-black text-white tracking-tight">
+        What it looks like <span class="text-gradient">day to day</span>
+      </h2>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 justify-items-center">
+      <figure class="group" data-reveal>
+        <img src="/shots/player.png" alt="Singlado player screen" width="804" height="1444"
+             class="w-[180px] md:w-[215px] h-auto drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2.5" />
+        <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Player
+        </figcaption>
+        <p class="mt-1 text-neutral-500 text-[13px]">Clean and instant</p>
+      </figure>
+      <figure class="group" data-reveal>
+        <img src="/shots/home.png" alt="Singlado home screen" width="804" height="1444"
+             class="w-[180px] md:w-[215px] h-auto drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2.5" />
+        <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Home
+        </figcaption>
+        <p class="mt-1 text-neutral-500 text-[13px]">All your music, one place</p>
+      </figure>
+      <figure class="group" data-reveal>
+        <img src="/shots/search.png" alt="Singlado search screen" width="804" height="1444"
+             class="w-[180px] md:w-[215px] h-auto drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2.5" />
+        <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Search
+        </figcaption>
+        <p class="mt-1 text-neutral-500 text-[13px]">Across every source</p>
+      </figure>
+      <figure class="group" data-reveal>
+        <img src="/shots/favorites.png" alt="Singlado favorites screen" width="804" height="1444"
+             class="w-[180px] md:w-[215px] h-auto drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2.5" />
+        <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Favorites
+        </figcaption>
+        <p class="mt-1 text-neutral-500 text-[13px]">Everything you love</p>
+      </figure>
+    </div>
+  </section>
+
   <!-- ================= FEATURE 1: universal / plugins ================= -->
   <FeatureRow
     eyebrow="Open by design"
-    title={`A player,<br/><span class="text-gradient">not a walled garden</span>`}
-    body="Singlado ships with no catalog. Connect the sources you want — public, private, free or paid — through source plugins. Nothing is bundled; everything is yours to choose."
+    title={`No catalog.<br/><span class="text-gradient">That's the point.</span>`}
+    body="Most music apps hand you their library and nothing else. Singlado comes empty on purpose. You connect the sources you actually use, public ones, private ones, free or paid, through source plugins, and only the ones you add show up."
   >
     <!-- visual: a stack of source plugin chips flowing into the player -->
     <div class="rounded-3xl border border-white/10 bg-ink-800/80 p-6 space-y-3 shadow-2xl shadow-brand/10">
@@ -92,8 +139,8 @@ import FeatureRow from '../components/FeatureRow.astro';
   <FeatureRow
     flip
     eyebrow="Real playback"
-    title={`Queue, shuffle,<br/><span class="text-gradient">infinite autoplay</span>`}
-    body="A proper engine under the hood: a context queue that builds itself, shuffle and repeat, and autoplay that never lets the silence fall. Control it from the lock screen, your headphones, or the car."
+    title={`Queue, shuffle,<br/><span class="text-gradient">and it keeps going</span>`}
+    body="There's a proper engine underneath. Tap a track and the queue builds itself from what you were browsing. Shuffle and repeat work the way you'd expect, and when the queue runs dry autoplay picks up related tracks so it doesn't just stop. Controls reach the lock screen, your headphones and the car."
   >
     <div class="rounded-3xl border border-white/10 bg-ink-800/80 p-7 shadow-2xl shadow-brand/10">
       <!-- animated waveform -->
@@ -113,8 +160,8 @@ import FeatureRow from '../components/FeatureRow.astro';
   <!-- ================= FEATURE 3: sync ================= -->
   <FeatureRow
     eyebrow="Follows you"
-    title={`Favorites & playlists,<br/><span class="text-gradient">synced everywhere</span>`}
-    body="Like a track with a tap, build playlists, keep your listening history — all tied to your account and synced across every device you sign in on."
+    title={`Favorites and playlists,<br/><span class="text-gradient">on every device</span>`}
+    body="Tap the heart to save a track, put together playlists, and let your history remember where you left off. It's all tied to your account, so signing in on another phone brings everything with you."
   >
     <div class="relative flex items-center justify-center gap-6 py-6">
       <div class="w-24 h-40 rounded-2xl border border-white/10 bg-ink-700/70 grid place-items-center text-brand">♪</div>
@@ -130,16 +177,17 @@ import FeatureRow from '../components/FeatureRow.astro';
   <section class="relative overflow-hidden py-28">
     <div class="aurora" aria-hidden="true"></div>
     <div class="max-w-4xl mx-auto px-6 text-center relative" data-reveal>
-      <span class="text-brand-light font-semibold text-[13px] tracking-[0.2em] uppercase">The pledge</span>
+      <span class="text-brand-light font-semibold text-[13px] tracking-[0.2em] uppercase">On pricing</span>
       <h2 class="mt-5 text-4xl md:text-6xl font-black text-white tracking-tight leading-[1.05]">
-        No subscriptions.<br /><span class="text-gradient">Ever.</span>
+        Buy it once,<br /><span class="text-gradient">and you're done</span>
       </h2>
       <p class="mt-6 text-neutral-400 text-lg max-w-2xl mx-auto leading-relaxed">
-        Most apps rent you your own music, month after month. We don't. The free
-        version is fully functional; Premium is a <span class="text-white font-medium">single one-time
-        purchase</span> that removes ads. Pay once, keep it — no "per month", no auto-renew.
+        Plenty of apps charge you every month to listen to music you already have.
+        We went the other way. The free version does everything and is supported by
+        ads; Premium is a one-off purchase that turns the ads off. No renewals, no
+        “per month”, nothing to cancel later.
       </p>
-      <a href="/premium" class="inline-block mt-8 text-brand-light hover:text-white font-semibold transition-colors">Why one-time, not a subscription →</a>
+      <a href="/premium" class="inline-block mt-8 text-brand-light hover:text-white font-semibold transition-colors">Why we skipped subscriptions →</a>
     </div>
   </section>
 
@@ -149,11 +197,12 @@ import FeatureRow from '../components/FeatureRow.astro';
       <div data-reveal>
         <span class="text-brand-light font-semibold text-[13px] tracking-[0.2em] uppercase">For builders</span>
         <h2 class="mt-4 text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
-          A plugin is<br /><span class="text-gradient">just a spec</span>
+          A plugin is mostly<br /><span class="text-gradient">just a config file</span>
         </h2>
         <p class="mt-5 text-neutral-400 text-lg leading-relaxed max-w-md">
-          No arbitrary code — a small, data-driven JSON spec tells Singlado how
-          to search a service and resolve a playable stream. Anyone can write one.
+          You don't ship code. A plugin is a small JSON spec that tells Singlado
+          how to search a service and get back something it can play. It's short
+          enough to read in a minute and write in an afternoon.
         </p>
         <a href="/plugins" class="group inline-flex items-center gap-2 mt-7 rounded-full border border-brand/40 hover:bg-brand/10 text-brand-light font-semibold px-6 py-3 transition-colors">
           Read the plugin guide
@@ -191,7 +240,7 @@ import FeatureRow from '../components/FeatureRow.astro';
     <div class="max-w-3xl mx-auto px-6 text-center relative" data-reveal>
       <img src="/logo.png" alt="" class="w-20 h-20 rounded-2xl mx-auto mb-8 shadow-xl shadow-brand/30" />
       <h2 class="text-4xl md:text-7xl font-black text-white tracking-tight leading-[1.02]">
-        Your music.<br />Your sources.<br /><span class="text-gradient">One player.</span>
+        Your music,<br />from your sources,<br /><span class="text-gradient">in one app.</span>
       </h2>
       <a href="https://play.google.com/store/apps/details?id=com.singlado.singlado"
          class="group inline-flex items-center gap-2 mt-10 rounded-full bg-brand hover:bg-brand-light text-ink-900 font-bold px-10 py-4 text-lg transition-all hover:shadow-[0_0_60px_-8px_rgba(29,185,84,0.8)] hover:-translate-y-0.5">
