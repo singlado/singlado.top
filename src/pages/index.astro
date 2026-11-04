@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import PhoneMock from '../components/PhoneMock.astro';
 import FeatureRow from '../components/FeatureRow.astro';
+import DownloadButtons from '../components/DownloadButtons.astro';
 ---
 
 <Base>
@@ -31,14 +32,10 @@ import FeatureRow from '../components/FeatureRow.astro';
           single purchase, not another monthly bill.
         </p>
 
-        <div class="mt-9 flex flex-wrap gap-4 animate-fade-up">
-          <a href="https://play.google.com/store/apps/details?id=com.singlado.singlado"
-             class="group rounded-full bg-brand hover:bg-brand-light text-ink-900 font-bold px-8 py-4 transition-all hover:shadow-[0_0_50px_-8px_rgba(29,185,84,0.7)] hover:-translate-y-0.5">
-            Get it on Google Play
-            <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
-          </a>
+        <div class="mt-9 animate-fade-up">
+          <DownloadButtons />
           <a href="/plugins"
-             class="rounded-full text-neutral-300 hover:text-white font-semibold px-6 py-4 transition-colors">
+             class="inline-block mt-5 text-neutral-300 hover:text-white font-semibold transition-colors">
             How plugins work ↓
           </a>
         </div>
@@ -242,11 +239,9 @@ import FeatureRow from '../components/FeatureRow.astro';
       <h2 class="text-4xl md:text-7xl font-black text-white tracking-tight leading-[1.02]">
         Your music,<br />from your sources,<br /><span class="text-gradient">in one app.</span>
       </h2>
-      <a href="https://play.google.com/store/apps/details?id=com.singlado.singlado"
-         class="group inline-flex items-center gap-2 mt-10 rounded-full bg-brand hover:bg-brand-light text-ink-900 font-bold px-10 py-4 text-lg transition-all hover:shadow-[0_0_60px_-8px_rgba(29,185,84,0.8)] hover:-translate-y-0.5">
-        Get it on Google Play
-        <span class="transition-transform group-hover:translate-x-1">→</span>
-      </a>
+      <div class="mt-10 flex justify-center">
+        <DownloadButtons size="lg" />
+      </div>
     </div>
   </section>
 
