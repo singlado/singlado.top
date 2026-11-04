@@ -1,0 +1,55 @@
+---
+// Download call-to-action: a direct APK download (primary) and a
+// Google Play button rendered as a disabled "coming soon" placeholder,
+// since the app isn't published on Google Play yet.
+export interface Props {
+  // Larger buttons for the final CTA, default size for the hero.
+  size?: 'default' | 'lg';
+}
+const { size = 'default' } = Astro.props;
+
+const apkUrl =
+  'https://github.com/singlado/singlado.top/releases/latest/download/singlado.apk';
+
+const pad = size === 'lg' ? 'px-10 py-4 text-lg' : 'px-8 py-4';
+const padGhost = size === 'lg' ? 'px-10 py-4 text-lg' : 'px-8 py-4';
+---
+
+<div class="flex flex-wrap items-center gap-4">
+  <!-- PRIMARY: direct APK download -->
+  <a
+    href={apkUrl}
+    class={`group inline-flex items-center gap-2.5 rounded-full bg-brand hover:bg-brand-light text-ink-900 font-bold ${pad} transition-all hover:shadow-[0_0_50px_-8px_rgba(29,185,84,0.7)] hover:-translate-y-0.5`}
+  >
+    <!-- Android head glyph -->
+    <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor" aria-hidden="true">
+      <path d="M17.6 9.48l1.84-3.18a.4.4 0 00-.69-.4l-1.86 3.22a11.5 11.5 0 00-9.78 0L5.25 5.9a.4.4 0 10-.69.4L6.4 9.48A10.8 10.8 0 001 18.5h22a10.8 10.8 0 00-5.4-9.02zM7 15.25a1 1 0 110-2 1 1 0 010 2zm10 0a1 1 0 110-2 1 1 0 010 2z"/>
+    </svg>
+    Download APK
+    <span class="inline-block transition-transform group-hover:translate-y-0.5">↓</span>
+  </a>
+
+  <!-- PLACEHOLDER: Google Play — coming soon, not a working link -->
+  <div class="relative inline-flex group/play">
+    <span
+      role="button"
+      aria-disabled="true"
+      tabindex="0"
+      title="Coming soon on Google Play"
+      class={`inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 text-neutral-400 font-semibold cursor-not-allowed select-none ${padGhost}`}
+    >
+      <img src="/google-play.svg" alt="" width="20" height="20" class="w-5 h-5 opacity-60" />
+      <span class="flex flex-col leading-tight text-left">
+        <span class="text-[11px] uppercase tracking-wide text-neutral-500">Google Play</span>
+        <span class="text-sm text-neutral-300">Coming soon</span>
+      </span>
+    </span>
+    <!-- tooltip -->
+    <span
+      class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-10 whitespace-nowrap rounded-lg bg-ink-700 border border-white/10 px-3 py-1.5 text-xs text-neutral-300 opacity-0 translate-y-1 transition-all duration-200 group-hover/play:opacity-100 group-hover/play:translate-y-0"
+      role="tooltip"
+    >
+      Not on Google Play yet
+    </span>
+  </div>
+</div>
