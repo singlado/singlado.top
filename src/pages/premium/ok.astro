@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+---
+
+<Base title="Payment complete · Singlado" description="Your Premium purchase is complete.">
+  <div class="relative min-h-screen">
+    <div class="aurora" aria-hidden="true"></div>
+    <Nav />
+    <main class="relative z-10 mx-auto max-w-xl px-6 pb-24 pt-24 text-center">
+      <div class="text-5xl">🎉</div>
+      <h1 class="mt-4 text-3xl font-extrabold tracking-tight">
+        <span class="text-gradient">Payment complete</span>
+      </h1>
+      <p class="mt-4 text-lg text-neutral-300">
+        Premium is unlocked on your account. Open Singlado — it appears automatically
+        (sign out and back in if you don't see it right away).
+      </p>
+      <a href="/" class="mt-8 inline-block rounded-lg border border-white/10 bg-white/5 px-5 py-2.5 font-semibold text-neutral-100 transition hover:bg-white/10">
+        Back to home
+      </a>
+    </main>
+  </div>
+</Base>
