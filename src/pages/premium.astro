@@ -81,6 +81,11 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
     const loginForm = document.getElementById('login-form');
     const loginBtn = document.getElementById('login-btn');
 
+    // The major version currently on sale, learned from GET /billing/price
+    // (never hardcoded). Entitlement check + checkout both use THIS, so when the
+    // server starts selling v2 the site follows automatically — no code change.
+    let sellingMajor = null;
+
     const setMsg = (text, ok) => {
       msg.textContent = text || '';
       msg.className = 'mt-3 text-sm ' + (ok ? 'text-brand' : 'text-red-400');
@@ -98,6 +103,7 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
         const r = await fetch(`${API_BASE}/billing/price`);
         const d = await r.json();
         if (d && d.price != null) {
+          sellingMajor = d.version;
           productLine.textContent = `Singlado Premium v${d.version} — ${money(d.price, d.currency)}`;
         } else {
           productLine.innerHTML = '<span class="text-neutral-400">Price temporarily unavailable</span>';
@@ -113,9 +119,11 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
     async function afterLogin(token) {
       // Already-premium guard: don't let an owner pay twice.
       // /me/entitlements needs X-App-Major and returns {"flags":{"licensed":bool}}.
+      // Guard against an unknown selling major (price load failed): skip the
+      // check only if we never learned it — the server-side 409 still protects.
       try {
         const r = await fetch(`${API_BASE}/me/entitlements`, {
-          headers: { Authorization: `Bearer ${token}`, 'X-App-Major': '1' },
+          headers: { Authorization: `Bearer ${token}`, 'X-App-Major': String(sellingMajor ?? '') },
         });
         if (r.ok) {
           const ent = await r.json();
@@ -132,9 +140,15 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
         setMsg('Opening checkout…', true);
         const r = await fetch(`${API_BASE}/billing/stripe/checkout`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-App-Major': '1' },
-          body: JSON.stringify({ major: 1 }),
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-App-Major': String(sellingMajor ?? '') },
+          body: JSON.stringify({ major: sellingMajor }),
         });
+        if (r.status === 409) {
+          // Server-side double-charge guard: already licensed for this major.
+          authBox.classList.add('hidden');
+          ownedBox.classList.remove('hidden');
+          return;
+        }
         if (!r.ok) throw new Error('checkout');
         const d = await r.json();
         if (!d || !d.url) throw new Error('nourl');
