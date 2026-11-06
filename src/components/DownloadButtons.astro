@@ -5,8 +5,10 @@
 export interface Props {
   // Larger buttons for the final CTA, default size for the hero.
   size?: 'default' | 'lg';
+  // Show a "Premium" link alongside the download (final CTA only).
+  showPremium?: boolean;
 }
-const { size = 'default' } = Astro.props;
+const { size = 'default', showPremium = false } = Astro.props;
 
 const apkUrl =
   'https://github.com/singlado/singlado.top/releases/latest/download/singlado.apk';
@@ -52,4 +54,16 @@ const padGhost = size === 'lg' ? 'px-10 py-4 text-lg' : 'px-8 py-4';
       Not on Google Play yet
     </span>
   </div>
+
+  {showPremium && (
+    <a
+      href="/premium"
+      class={`inline-flex items-center gap-2.5 rounded-full border border-brand/40 bg-brand/10 text-brand-light font-semibold hover:bg-brand/20 transition-all ${padGhost}`}
+    >
+      <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor" aria-hidden="true">
+        <path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9l6.6-.9L12 2z"/>
+      </svg>
+      Get Premium
+    </a>
+  )}
 </div>
