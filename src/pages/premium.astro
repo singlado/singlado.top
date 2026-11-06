@@ -112,11 +112,14 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
     // After a successful login we hold the token in memory only, use it at once, and discard it.
     async function afterLogin(token) {
       // Already-premium guard: don't let an owner pay twice.
+      // /me/entitlements needs X-App-Major and returns {"flags":{"licensed":bool}}.
       try {
-        const r = await fetch(`${API_BASE}/me/entitlements`, { headers: { Authorization: `Bearer ${token}` } });
+        const r = await fetch(`${API_BASE}/me/entitlements`, {
+          headers: { Authorization: `Bearer ${token}`, 'X-App-Major': '1' },
+        });
         if (r.ok) {
           const ent = await r.json();
-          if (ent && ent.licensed === true) {
+          if (ent && ent.flags && ent.flags.licensed === true) {
             authBox.classList.add('hidden');
             ownedBox.classList.remove('hidden');
             return;
