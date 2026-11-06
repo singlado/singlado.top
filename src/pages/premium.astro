@@ -1,0 +1,209 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+
+// Public config (not secrets). The Google web client id is added once it exists
+// in Google Cloud (OAuth "Web application", authorized origin https://singlado.top);
+// until then the Google button stays hidden and email+password works on its own.
+const API_BASE = 'https://api.singlado.top';
+const GOOGLE_WEB_CLIENT_ID = ''; // e.g. "1234-abc.apps.googleusercontent.com" — leave empty to hide the Google button
+---
+
+<Base title="Premium · Singlado" description="Unlock Singlado Premium for your account. One-time purchase, no subscription.">
+  <div class="relative min-h-screen">
+    <div class="aurora" aria-hidden="true"></div>
+    <Nav />
+
+    <main class="relative z-10 mx-auto max-w-xl px-6 pb-24 pt-16">
+      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">
+        <span class="text-gradient">Premium</span>
+      </h1>
+      <p class="mt-3 text-lg text-neutral-400">
+        One purchase, no recurring fee. Buy it once for your account — the ads go away and it's yours.
+      </p>
+
+      <!-- Product + price line, filled from the backend -->
+      <div class="mt-10 rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div id="product-line" class="text-xl font-semibold text-neutral-100">
+          <span class="text-neutral-500">Loading price…</span>
+        </div>
+        <p id="product-sub" class="mt-1 text-sm text-neutral-400">No subscription. One-time unlock, tied to your account.</p>
+
+        <!-- Sign-in gate: you prove who you are, then buy -->
+        <div id="auth-box" class="mt-6">
+          <p class="mb-3 text-sm text-neutral-300">Sign in to the account you want to unlock:</p>
+
+          <form id="login-form" class="space-y-3">
+            <input id="email" type="email" autocomplete="email" required placeholder="Email"
+              class="w-full rounded-lg border border-white/10 bg-ink-900/60 px-4 py-2.5 text-neutral-100 outline-none focus:border-brand/60" />
+            <input id="password" type="password" autocomplete="current-password" placeholder="Password"
+              class="w-full rounded-lg border border-white/10 bg-ink-900/60 px-4 py-2.5 text-neutral-100 outline-none focus:border-brand/60" />
+            <button id="login-btn" type="submit"
+              class="w-full rounded-lg bg-brand px-4 py-2.5 font-semibold text-ink-900 transition hover:brightness-110 disabled:opacity-50">
+              Sign in &amp; continue
+            </button>
+          </form>
+
+          <div id="google-wrap" class="mt-3 hidden">
+            <div class="my-3 flex items-center gap-3 text-xs text-neutral-500">
+              <span class="h-px flex-1 bg-white/10"></span>or<span class="h-px flex-1 bg-white/10"></span>
+            </div>
+            <div id="google-btn"></div>
+          </div>
+
+          <p id="auth-msg" class="mt-3 text-sm" role="status" aria-live="polite"></p>
+        </div>
+
+        <!-- Shown when the signed-in account already owns Premium -->
+        <div id="owned-box" class="mt-6 hidden">
+          <p class="text-lg font-semibold text-brand">You already have Premium 🎉</p>
+          <p class="mt-1 text-sm text-neutral-400">This account is already unlocked. Open Singlado and enjoy — no second purchase needed.</p>
+        </div>
+      </div>
+
+      <div class="mt-10 space-y-4 text-neutral-400">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-neutral-500">What Premium changes</h2>
+        <p><strong class="text-neutral-200">No more ads.</strong> That's it. An uninterrupted listen. Search, playback, queue, shuffle, repeat, autoplay, favorites, playlists, history and account sync are all free.</p>
+      </div>
+    </main>
+  </div>
+
+  {GOOGLE_WEB_CLIENT_ID && (
+    <script is:inline src="https://accounts.google.com/gsi/client" async></script>
+  )}
+
+  <script is:inline define:vars={{ API_BASE, GOOGLE_WEB_CLIENT_ID }}>
+    const msg = document.getElementById('auth-msg');
+    const productLine = document.getElementById('product-line');
+    const productSub = document.getElementById('product-sub');
+    const authBox = document.getElementById('auth-box');
+    const ownedBox = document.getElementById('owned-box');
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+
+    const setMsg = (text, ok) => {
+      msg.textContent = text || '';
+      msg.className = 'mt-3 text-sm ' + (ok ? 'text-brand' : 'text-red-400');
+    };
+    const money = (minor, currency) => {
+      try {
+        return new Intl.NumberFormat(undefined, { style: 'currency', currency: (currency || 'EUR').toUpperCase() })
+          .format((minor || 0) / 100);
+      } catch { return ((minor || 0) / 100).toFixed(2) + ' ' + (currency || '').toUpperCase(); }
+    };
+
+    // 1) Load price + version from the backend (never hardcoded).
+    (async () => {
+      try {
+        const r = await fetch(`${API_BASE}/billing/price`);
+        const d = await r.json();
+        if (d && d.price != null) {
+          productLine.textContent = `Singlado Premium v${d.version} — ${money(d.price, d.currency)}`;
+        } else {
+          productLine.innerHTML = '<span class="text-neutral-400">Price temporarily unavailable</span>';
+          loginBtn.disabled = true;
+        }
+      } catch {
+        productLine.innerHTML = '<span class="text-neutral-400">Price temporarily unavailable</span>';
+        loginBtn.disabled = true;
+      }
+    })();
+
+    // After a successful login we hold the token in memory only, use it at once, and discard it.
+    async function afterLogin(token) {
+      // Already-premium guard: don't let an owner pay twice.
+      try {
+        const r = await fetch(`${API_BASE}/me/entitlements`, { headers: { Authorization: `Bearer ${token}` } });
+        if (r.ok) {
+          const ent = await r.json();
+          if (ent && ent.licensed === true) {
+            authBox.classList.add('hidden');
+            ownedBox.classList.remove('hidden');
+            return;
+          }
+        }
+      } catch { /* non-fatal: fall through to checkout */ }
+
+      // Start the Stripe checkout for this account, then redirect (token now discarded).
+      try {
+        setMsg('Opening checkout…', true);
+        const r = await fetch(`${API_BASE}/billing/stripe/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-App-Major': '1' },
+          body: JSON.stringify({ major: 1 }),
+        });
+        if (!r.ok) throw new Error('checkout');
+        const d = await r.json();
+        if (!d || !d.url) throw new Error('nourl');
+        window.location = d.url;
+      } catch {
+        setMsg("Couldn't start the payment — please try again.", false);
+      }
+    }
+
+    // Email + password login.
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setMsg('', true);
+      loginBtn.disabled = true;
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      try {
+        const r = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        if (r.status === 401) {
+          // Could be wrong credentials OR a social-only account with no password.
+          setMsg('Email or password not correct. If you signed up with Google, use "Continue with Google".', false);
+          loginBtn.disabled = false;
+          return;
+        }
+        if (r.status === 403) {
+          setMsg('Please verify your email in the Singlado app first, then come back.', false);
+          loginBtn.disabled = false;
+          return;
+        }
+        if (!r.ok) throw new Error('login');
+        const d = await r.json();
+        const token = d.access_token || d.accessToken || (d.session && d.session.access_token);
+        if (!token) throw new Error('notoken');
+        await afterLogin(token);
+      } catch {
+        setMsg('Something went wrong. Please try again.', false);
+      } finally {
+        if (!ownedBox || ownedBox.classList.contains('hidden')) loginBtn.disabled = false;
+      }
+    });
+
+    // Google login (only when a web client id is configured).
+    if (GOOGLE_WEB_CLIENT_ID) {
+      document.getElementById('google-wrap').classList.remove('hidden');
+      const init = () => {
+        if (!window.google || !google.accounts || !google.accounts.id) { setTimeout(init, 300); return; }
+        google.accounts.id.initialize({
+          client_id: GOOGLE_WEB_CLIENT_ID,
+          callback: async (resp) => {
+            try {
+              const r = await fetch(`${API_BASE}/auth/social/google`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_token: resp.credential }),
+              });
+              if (!r.ok) throw new Error('google');
+              const d = await r.json();
+              const token = d.access_token || d.accessToken || (d.session && d.session.access_token);
+              if (!token) throw new Error('notoken');
+              await afterLogin(token);
+            } catch {
+              setMsg('Google sign-in failed. Please try again.', false);
+            }
+          },
+        });
+        google.accounts.id.renderButton(document.getElementById('google-btn'), { theme: 'filled_black', size: 'large', width: 320 });
+      };
+      init();
+    }
+  </script>
+</Base>
