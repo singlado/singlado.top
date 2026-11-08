@@ -75,6 +75,11 @@ Singlado relies on these providers, each with its own privacy policy:
   (Settings → Privacy → Ads). Buying the premium upgrade removes ads.
 - **Account data:** you can view and change your playlists, favorites, and
   history in the app.
+- **Export your data:** you can download a copy of your personal data in the app
+  (Settings → export). We give it to you in a common electronic format (JSON),
+  and it includes your account info, playlists, listening history, favorites,
+  and a summary of your license/purchase. For security it does **not** include
+  sensitive data such as your password hash or sign‑in tokens.
 - **Sign‑in method:** you may use email/password or Google.
 
 ## 7. Deleting your account and data
@@ -82,6 +87,13 @@ To delete your account and the personal data associated with it, contact
 **singlado.music@gmail.com** from your account email, or use the in‑app account
 deletion option where available. We will delete your account data within a
 reasonable period, subject to the retention exceptions in Section 4.
+
+When you delete your account we erase your personal data (your account details,
+playlists, favorites, and listening history). We keep one exception: a record of
+any premium purchase/license. We retain this limited record to meet our legal and
+accounting obligations and to establish or defend legal claims if needed (GDPR
+Article 17(3)(b) and (e)). It is kept only as long as required and is not used
+for any other purpose.
 
 ## 8. Children
 Singlado is not directed to children under the age required by your country's
