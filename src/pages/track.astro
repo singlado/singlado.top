@@ -1,0 +1,41 @@
+---
+// singlado.top/track — "Ascolta su Singlado" landing.
+// With the app installed, Android App Links intercept this URL before the
+// browser ever loads this page. This page therefore only runs for users
+// WITHOUT the app: it sends them straight to the Play Store listing.
+// Neutral by design: no track metadata shown, no provider names.
+const store = 'https://play.google.com/store/apps/details?id=com.singlado.singlado';
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${store}`} />
+    <title>Singlado</title>
+    <script is:inline define:vars={{ store }}>
+      location.replace(store);
+    </script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0a0a0a;
+        color: #fff;
+        font-family: system-ui, -apple-system, sans-serif;
+        text-align: center;
+      }
+      a { color: #1db954; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <p>
+      Apri con Singlado…<br />
+      <a href={store}>Scarica Singlado</a>
+    </p>
+  </body>
+</html>
