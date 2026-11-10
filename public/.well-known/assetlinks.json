@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.singlado.singlado",
+      "sha256_cert_fingerprints": [
+        "73:48:44:0C:57:7A:38:7B:F2:0B:D7:89:63:1C:1D:1F:52:E3:E2:70:34:CE:65:0B:D5:EB:BE:6F:B8:B0:3D:ED",
+        "E8:68:9B:C3:D4:96:2B:6E:69:C0:03:FE:DE:49:41:33:94:05:07:8F:A0:3F:3C:4E:1C:7A:5B:6A:1B:4B:D6:5E"
+      ]
+    }
+  }
+]
