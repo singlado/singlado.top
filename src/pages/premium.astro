@@ -8,7 +8,7 @@ const API_BASE = 'https://api.singlado.top';
 const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps.googleusercontent.com';
 ---
 
-<Base title="Premium · Singlado" description="Buy Singlado once for your account. No subscription, no expiry.">
+<Base title="Premium | Singlado" description="Buy Singlado once for your account. No subscription, no expiry.">
   <div class="relative min-h-screen">
     <div class="aurora" aria-hidden="true"></div>
     <Nav />
@@ -218,7 +218,14 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
           },
         });
         document.getElementById('google-btn').addEventListener('click', () => {
-          google.accounts.id.prompt();
+          google.accounts.id.prompt((n) => {
+            // One Tap can be silently suppressed (prior dismissal, blocked
+            // third-party cookies, FedCM). Don't leave the button dead: tell the
+            // user to fall back to email + password.
+            if (n && (n.isNotDisplayed?.() || n.isSkippedMoment?.())) {
+              setMsg('Google sign-in is unavailable here. Please use email and password above.', false);
+            }
+          });
         });
       };
       init();
