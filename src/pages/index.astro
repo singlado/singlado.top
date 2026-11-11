@@ -76,38 +76,26 @@ import DownloadButtons from '../components/DownloadButtons.astro';
       </h2>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 justify-items-center">
-      <figure class="group" data-reveal>
-        <img src="/shots/player.png" alt="Singlado player screen" width="804" height="1444"
-             class="w-[180px] md:w-[215px] h-auto drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2.5" />
-        <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
-          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Player
-        </figcaption>
-        <p class="mt-1 text-neutral-500 text-[13px]">Clean and instant</p>
-      </figure>
-      <figure class="group" data-reveal>
-        <img src="/shots/home.png" alt="Singlado home screen" width="804" height="1444"
-             class="w-[180px] md:w-[215px] h-auto drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2.5" />
-        <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
-          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Home
-        </figcaption>
-        <p class="mt-1 text-neutral-500 text-[13px]">All your music, one place</p>
-      </figure>
-      <figure class="group" data-reveal>
-        <img src="/shots/search.png" alt="Singlado search screen" width="804" height="1444"
-             class="w-[180px] md:w-[215px] h-auto drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2.5" />
-        <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
-          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Search
-        </figcaption>
-        <p class="mt-1 text-neutral-500 text-[13px]">Across every source</p>
-      </figure>
-      <figure class="group" data-reveal>
-        <img src="/shots/favorites.png" alt="Singlado favorites screen" width="804" height="1444"
-             class="w-[180px] md:w-[215px] h-auto drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2.5" />
-        <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
-          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>Favorites
-        </figcaption>
-        <p class="mt-1 text-neutral-500 text-[13px]">Everything you love</p>
-      </figure>
+      {[
+        { src: '/shots/player.png',    label: 'Player',    sub: 'Clean and instant' },
+        { src: '/shots/home.png',      label: 'Home',      sub: 'All your music, one place' },
+        { src: '/shots/search.png',    label: 'Search',    sub: 'Across every source' },
+        { src: '/shots/favorites.png', label: 'Favorites', sub: 'Everything you love' },
+      ].map((s) => (
+        <figure class="group" data-reveal>
+          <!-- uniform phone frame: every screenshot fills the same area -->
+          <div class="w-[180px] md:w-[215px] rounded-[2rem] border border-white/10 bg-gradient-to-b from-ink-700 to-ink-800 p-2 shadow-2xl shadow-brand/10 transition-transform duration-500 group-hover:-translate-y-2.5">
+            <div class="aspect-[9/19] w-full overflow-hidden rounded-[1.5rem] bg-ink-900">
+              <img src={s.src} alt={`Singlado ${s.label} screen`} loading="lazy"
+                   class="h-full w-full object-cover object-top" />
+            </div>
+          </div>
+          <figcaption class="mt-6 inline-flex items-center gap-2.5 text-white font-semibold text-[15px]">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>{s.label}
+          </figcaption>
+          <p class="mt-1 text-neutral-500 text-[13px]">{s.sub}</p>
+        </figure>
+      ))}
     </div>
   </section>
 
