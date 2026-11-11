@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+
+const v1 = [
+  ['http.get', 'GET a URL, returns the response body'],
+  ['http.post', 'POST a URL with a templated body'],
+  ['json.parse', 'Parse a JSON string into a map or list'],
+  ['json.extract', 'Read a value out of JSON by path'],
+  ['regex.extract', 'Pull a capture group out of text'],
+  ['base64.encode / decode', 'Base64 a value, or decode one'],
+  ['url.template', '{var} substitution into a string'],
+  ['url.concat', 'Join templated parts into one string'],
+  ['map', 'Shape a list of objects into a list of fields'],
+  ['pick', 'Keep only the named keys of a map'],
+];
+const later = [
+  ['v2', 'extract.server', 'Hand heavy extraction to the backend over a contracted endpoint'],
+  ['v3', 'url.encode, json.string', 'Percent-encode a value, or quote one as a JSON string'],
+  ['v4', 'filter, walk, extract.local, extract.solved', 'Select from a list, walk a nested structure, run a client-side search or resolve'],
+  ['v5', 'expand', 'Run a sub-flow per element and flatten the results'],
+  ['v6', 'config and auth', 'Declare user-supplied fields for an authenticated source'],
+];
+---
+
+<Base title="Plugins · Singlado" description="Add a source to Singlado with a declarative manifest. Data, not code.">
+  <div class="relative min-h-screen">
+    <div class="aurora" aria-hidden="true"></div>
+    <Nav />
+
+    <main class="relative z-10 mx-auto max-w-3xl px-6 pb-28 pt-28">
+      <h1 class="text-5xl sm:text-6xl font-black tracking-[-0.03em] text-white leading-[1.02]">
+        Bring your own <span class="text-gradient">source</span>.
+      </h1>
+      <p class="mt-6 text-lg text-neutral-400 leading-relaxed">
+        Singlado ships with no catalog. A source is a plugin you add: a small <strong class="text-neutral-200">manifest</strong> that tells the app how to search a service and how to turn a result into something it can play.
+      </p>
+
+      <div class="my-10 h-[3px] w-28" style="background: repeating-linear-gradient(90deg, #1DB954 0 10px, transparent 10px 18px);"></div>
+
+      <h2 class="text-2xl font-bold text-white">Data, not code</h2>
+      <p class="mt-4 text-neutral-400 leading-relaxed">
+        A manifest is pure JSON. There is no embedded script, no interpreter, no way to run arbitrary code. The engine reads the manifest and composes a fixed, closed set of built-in steps. A manifest only chooses <em>which</em> steps run and <em>with what data</em>, never <em>what they do</em>. That is what makes a plugin safe to read and safe to share.
+      </p>
+
+      <h2 class="mt-12 text-2xl font-bold text-white">Two pipelines</h2>
+      <p class="mt-4 text-neutral-400 leading-relaxed">
+        Every manifest answers two questions. <strong class="text-neutral-200">search</strong> takes a query and returns a list of results. <strong class="text-neutral-200">resolve</strong> takes the result the user picked and returns a playable stream. Both are a short list of steps the engine runs in order.
+      </p>
+
+      <h2 class="mt-12 text-2xl font-bold text-white">The vocabulary</h2>
+      <p class="mt-4 text-neutral-400 leading-relaxed">
+        The steps are a closed, versioned set. Your manifest declares a <code class="text-brand-light">vocabularyVersion</code>, and the engine refuses anything outside it. Version 1 is the core:
+      </p>
+      <div class="mt-5 overflow-hidden rounded-xl border border-white/10">
+        {v1.map(([op, desc], i) => (
+          <div class={`flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 px-4 py-3 ${i % 2 ? 'bg-white/[0.02]' : ''}`}>
+            <code class="text-brand-light text-sm font-semibold sm:w-48 shrink-0">{op}</code>
+            <span class="text-sm text-neutral-400">{desc}</span>
+          </div>
+        ))}
+      </div>
+      <p class="mt-6 text-neutral-400 leading-relaxed">Later versions add more, each a strict superset of the one before:</p>
+      <div class="mt-4 space-y-3">
+        {later.map(([ver, ops, desc]) => (
+          <div class="rounded-xl border border-white/8 bg-ink-800/60 px-4 py-3">
+            <div class="flex items-baseline gap-3">
+              <span class="text-brand font-bold text-sm">{ver}</span>
+              <code class="text-neutral-200 text-sm">{ops}</code>
+            </div>
+            <p class="mt-1 text-sm text-neutral-500">{desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="mt-12 text-2xl font-bold text-white">Reading JSON</h2>
+      <p class="mt-4 text-neutral-400 leading-relaxed">
+        Steps that read JSON use a tiny path grammar: <code class="text-brand-light">a.b.c</code> descends through nested objects, <code class="text-brand-light">xs[0]</code> indexes a list, <code class="text-brand-light">xs[]</code> is the list itself, and <code class="text-brand-light">xs[].title</code> maps over a list collecting one field from each. No filters, no functions. It says where to read, never what to compute.
+      </p>
+
+      <h2 class="mt-12 text-2xl font-bold text-white">Adding one</h2>
+      <p class="mt-4 text-neutral-400 leading-relaxed">
+        In the app, open <strong class="text-neutral-200">Add a source</strong>. Connect a personal media server with its address and login, or add a community plugin: discover one on GitHub, import a file, paste a manifest, or load it from a URL. Community plugins are not verified by us, so you decide which to trust.
+      </p>
+
+      <section class="mt-16 text-center">
+        <p class="text-2xl font-bold text-white">Only what you add shows up.</p>
+        <p class="mt-3 text-neutral-400">See it in action on the <a href="/features" class="text-brand hover:text-brand-light underline underline-offset-4">features page</a>.</p>
+      </section>
+    </main>
+  </div>
+</Base>
