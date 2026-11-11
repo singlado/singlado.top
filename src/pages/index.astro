@@ -63,6 +63,7 @@ import DownloadButtons from '../components/DownloadButtons.astro';
         <span><b class="text-gradient text-lg">∞</b> sources via plugins</span>
         <span><b class="text-white text-lg">1</b> one-time unlock</span>
       </div>
+      <a href="/premium" class="rounded-full border border-brand/40 bg-brand/10 text-brand-light hover:bg-brand hover:text-ink-900 font-semibold text-sm px-5 py-2 transition-all">Get Premium</a>
     </div>
   </section>
 
@@ -232,7 +233,7 @@ import DownloadButtons from '../components/DownloadButtons.astro';
   </section>
 
   <!-- ================= FINAL CTA ================= -->
-  <section class="relative overflow-hidden py-36">
+  <section id="get" class="relative overflow-hidden py-36">
     <div class="aurora" aria-hidden="true"></div>
     <div class="max-w-3xl mx-auto px-6 text-center relative" data-reveal>
       <img src="/logo.png" alt="" class="w-20 h-20 rounded-2xl mx-auto mb-8 shadow-xl shadow-brand/30" />
@@ -240,7 +241,7 @@ import DownloadButtons from '../components/DownloadButtons.astro';
         Your music,<br />from your sources,<br /><span class="text-gradient">in one app.</span>
       </h2>
       <div class="mt-10 flex justify-center">
-        <DownloadButtons size="lg" showPremium={true} />
+        <DownloadButtons size="lg" showPremium={false} />
       </div>
     </div>
   </section>
