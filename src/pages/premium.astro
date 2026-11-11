@@ -3,36 +3,62 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 
 // Public config (not secrets). The Google web client id is added once it exists
-// in Google Cloud (OAuth "Web application", authorized origin https://singlado.top);
-// until then the Google button stays hidden and email+password works on its own.
+// in Google Cloud (OAuth "Web application", authorized origin https://singlado.top).
 const API_BASE = 'https://api.singlado.top';
-const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps.googleusercontent.com'; // Singlado Web Prod (OAuth web client)
+const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps.googleusercontent.com';
 ---
 
-<Base title="Premium · Singlado" description="Unlock Singlado Premium for your account. One-time purchase, no subscription.">
+<Base title="Premium · Singlado" description="Buy Singlado once for your account. No subscription, no expiry.">
   <div class="relative min-h-screen">
     <div class="aurora" aria-hidden="true"></div>
     <Nav />
 
-    <main class="relative z-10 mx-auto max-w-xl px-6 pb-24 pt-16">
-      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">
-        <span class="text-gradient">Premium</span>
+    <main class="relative z-10 mx-auto max-w-2xl px-6 pb-28 pt-28">
+
+      <!-- HERO -->
+      <h1 class="text-[2.8rem] sm:text-6xl font-black tracking-[-0.03em] text-white leading-[1.05]">
+        Subscriptions are <span class="italic text-brand">démodé</span>.
       </h1>
-      <p class="mt-3 text-lg text-neutral-400">
-        One purchase, no recurring fee. Buy it once for your account — the ads go away and it's yours.
-      </p>
+      <h1 class="text-[2.8rem] sm:text-6xl font-black tracking-[-0.03em] text-white leading-[1.05] whitespace-nowrap">
+        Buy the app, like in the <span class="text-brand">1990s</span>.
+      </h1>
 
-      <!-- Product + price line, filled from the backend -->
-      <div class="mt-10 rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div id="product-line" class="text-xl font-semibold text-neutral-100">
-          <span class="text-neutral-500">Loading price…</span>
+      <div class="my-8 h-[3px] w-28" style="background: repeating-linear-gradient(90deg, #1DB954 0 10px, transparent 10px 18px);"></div>
+
+      <p class="text-2xl sm:text-3xl font-extrabold tracking-[-0.01em] text-white">Pay once. It's yours.</p>
+      <p class="text-2xl sm:text-3xl font-extrabold tracking-[-0.01em] text-neutral-500">No subscription. No expiry. No price creep.</p>
+
+      <!-- PRICE (filled live from the backend; the number is never hardcoded) -->
+      <div class="mt-12">
+        <div id="product-line" class="text-6xl font-black tracking-[-0.03em] text-white leading-none">
+          <span class="text-neutral-600 text-2xl font-bold">Loading price…</span>
         </div>
-        <p id="product-sub" class="mt-1 text-sm text-neutral-400">No subscription. One-time unlock, tied to your account.</p>
+        <p class="mt-3 text-lg text-neutral-400">One time. Not every month.</p>
+      </div>
 
-        <!-- Sign-in gate: you prove who you are, then buy -->
-        <div id="auth-box" class="mt-6">
-          <p class="mb-3 text-sm text-neutral-300">Sign in to the account you want to unlock:</p>
+      <!-- THREE CHECKS -->
+      <div class="mt-10 flex flex-col gap-5 max-w-lg">
+        <div class="flex items-center gap-3.5"><span class="text-brand text-lg">✓</span><span class="text-[17px] text-neutral-200">No ads. Just music.</span></div>
+        <div class="flex items-center gap-3.5"><span class="text-brand text-lg">✓</span><span class="text-[17px] text-neutral-200">Every track plays instantly.</span></div>
+        <div class="flex items-center gap-3.5"><span class="text-brand text-lg">✓</span><span class="text-[17px] text-neutral-200">Works on every device you sign in on.</span></div>
+      </div>
 
+      <!-- HONEST SMALL PRINT -->
+      <div class="mt-8 text-sm leading-7 text-neutral-500 max-w-xl">
+        You buy the <strong class="text-neutral-300">v1 license</strong>.<br/>
+        A future v2 would be a separate buy. Your v1 stays unlocked.<br/>
+        We keep all the older versions running as long as we can.
+      </div>
+
+      <!-- PURCHASE FORM (the one real box) -->
+      <div class="mt-12 rounded-2xl border border-white/10 bg-ink-800/80 p-7">
+        <div class="flex items-baseline justify-between">
+          <div class="font-bold text-white">Unlock Singlado license v1</div>
+          <div id="form-price" class="font-bold text-brand"></div>
+        </div>
+        <p class="mt-1 text-sm text-neutral-400">Sign in to the account you want to unlock.</p>
+
+        <div id="auth-box" class="mt-5">
           <form id="login-form" class="space-y-3">
             <input id="email" type="email" autocomplete="email" required placeholder="Email"
               class="w-full rounded-lg border border-white/10 bg-ink-900/60 px-4 py-2.5 text-neutral-100 outline-none focus:border-brand/60" />
@@ -40,7 +66,7 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
               class="w-full rounded-lg border border-white/10 bg-ink-900/60 px-4 py-2.5 text-neutral-100 outline-none focus:border-brand/60" />
             <button id="login-btn" type="submit"
               class="w-full rounded-lg bg-brand px-4 py-2.5 font-semibold text-ink-900 transition hover:brightness-110 disabled:opacity-50">
-              Sign in &amp; continue
+              Sign in and continue
             </button>
           </form>
 
@@ -48,22 +74,20 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
             <div class="my-3 flex items-center gap-3 text-xs text-neutral-500">
               <span class="h-px flex-1 bg-white/10"></span>or<span class="h-px flex-1 bg-white/10"></span>
             </div>
-            <div id="google-btn"></div>
+            <!-- custom full-width button with the app's gradient G -->
+            <button id="google-btn" type="button"
+              class="flex w-full items-center justify-center gap-2.5 rounded-lg bg-white px-4 py-2.5 font-semibold text-[#1f1f1f] transition hover:brightness-95">
+              <img src="/google_g.svg" width="18" height="18" alt="" /> Continue with Google
+            </button>
           </div>
 
           <p id="auth-msg" class="mt-3 text-sm" role="status" aria-live="polite"></p>
         </div>
 
-        <!-- Shown when the signed-in account already owns Premium -->
-        <div id="owned-box" class="mt-6 hidden">
+        <div id="owned-box" class="mt-5 hidden">
           <p class="text-lg font-semibold text-brand">You already have Premium 🎉</p>
-          <p class="mt-1 text-sm text-neutral-400">This account is already unlocked. Open Singlado and enjoy — no second purchase needed.</p>
+          <p class="mt-1 text-sm text-neutral-400">This account is already unlocked. Open Singlado and enjoy, no second purchase needed.</p>
         </div>
-      </div>
-
-      <div class="mt-10 space-y-4 text-neutral-400">
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-neutral-500">What Premium changes</h2>
-        <p><strong class="text-neutral-200">No more ads.</strong> That's it. An uninterrupted listen. Search, playback, queue, shuffle, repeat, autoplay, favorites, playlists, history and account sync are all free.</p>
       </div>
     </main>
   </div>
@@ -75,15 +99,12 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
   <script is:inline define:vars={{ API_BASE, GOOGLE_WEB_CLIENT_ID }}>
     const msg = document.getElementById('auth-msg');
     const productLine = document.getElementById('product-line');
-    const productSub = document.getElementById('product-sub');
+    const formPrice = document.getElementById('form-price');
     const authBox = document.getElementById('auth-box');
     const ownedBox = document.getElementById('owned-box');
     const loginForm = document.getElementById('login-form');
     const loginBtn = document.getElementById('login-btn');
 
-    // The major version currently on sale, learned from GET /billing/price
-    // (never hardcoded). Entitlement check + checkout both use THIS, so when the
-    // server starts selling v2 the site follows automatically — no code change.
     let sellingMajor = null;
 
     const setMsg = (text, ok) => {
@@ -97,30 +118,26 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
       } catch { return ((minor || 0) / 100).toFixed(2) + ' ' + (currency || '').toUpperCase(); }
     };
 
-    // 1) Load price + version from the backend (never hardcoded).
+    // Load price + version from the backend (never hardcoded).
     (async () => {
       try {
         const r = await fetch(`${API_BASE}/billing/price`);
         const d = await r.json();
         if (d && d.price != null) {
           sellingMajor = d.version;
-          productLine.textContent = `Singlado Premium v${d.version} — ${money(d.price, d.currency)}`;
+          productLine.innerHTML = `${money(d.price, d.currency)}<span class="text-2xl text-neutral-500 font-bold"> once</span>`;
+          formPrice.textContent = money(d.price, d.currency);
         } else {
-          productLine.innerHTML = '<span class="text-neutral-400">Price temporarily unavailable</span>';
+          productLine.innerHTML = '<span class="text-neutral-400 text-2xl font-bold">Price temporarily unavailable</span>';
           loginBtn.disabled = true;
         }
       } catch {
-        productLine.innerHTML = '<span class="text-neutral-400">Price temporarily unavailable</span>';
+        productLine.innerHTML = '<span class="text-neutral-400 text-2xl font-bold">Price temporarily unavailable</span>';
         loginBtn.disabled = true;
       }
     })();
 
-    // After a successful login we hold the token in memory only, use it at once, and discard it.
     async function afterLogin(token) {
-      // Already-premium guard: don't let an owner pay twice.
-      // /me/entitlements needs X-App-Major and returns {"flags":{"licensed":bool}}.
-      // Guard against an unknown selling major (price load failed): skip the
-      // check only if we never learned it — the server-side 409 still protects.
       try {
         const r = await fetch(`${API_BASE}/me/entitlements`, {
           headers: { Authorization: `Bearer ${token}`, 'X-App-Major': String(sellingMajor ?? '') },
@@ -133,9 +150,8 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
             return;
           }
         }
-      } catch { /* non-fatal: fall through to checkout */ }
+      } catch { /* non-fatal */ }
 
-      // Start the Stripe checkout for this account, then redirect (token now discarded).
       try {
         setMsg('Opening checkout…', true);
         const r = await fetch(`${API_BASE}/billing/stripe/checkout`, {
@@ -143,22 +159,16 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-App-Major': String(sellingMajor ?? '') },
           body: JSON.stringify({ major: sellingMajor }),
         });
-        if (r.status === 409) {
-          // Server-side double-charge guard: already licensed for this major.
-          authBox.classList.add('hidden');
-          ownedBox.classList.remove('hidden');
-          return;
-        }
+        if (r.status === 409) { authBox.classList.add('hidden'); ownedBox.classList.remove('hidden'); return; }
         if (!r.ok) throw new Error('checkout');
         const d = await r.json();
         if (!d || !d.url) throw new Error('nourl');
         window.location = d.url;
       } catch {
-        setMsg("Couldn't start the payment — please try again.", false);
+        setMsg("Couldn't start the payment, please try again.", false);
       }
     }
 
-    // Email + password login.
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       setMsg('', true);
@@ -167,21 +177,11 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
       const password = document.getElementById('password').value;
       try {
         const r = await fetch(`${API_BASE}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
         });
-        if (r.status === 401) {
-          // Could be wrong credentials OR a social-only account with no password.
-          setMsg('Email or password not correct. If you signed up with Google, use "Continue with Google".', false);
-          loginBtn.disabled = false;
-          return;
-        }
-        if (r.status === 403) {
-          setMsg('Please verify your email in the Singlado app first, then come back.', false);
-          loginBtn.disabled = false;
-          return;
-        }
+        if (r.status === 401) { setMsg('Email or password not correct. If you signed up with Google, use Continue with Google.', false); loginBtn.disabled = false; return; }
+        if (r.status === 403) { setMsg('Please verify your email in the Singlado app first, then come back.', false); loginBtn.disabled = false; return; }
         if (!r.ok) throw new Error('login');
         const d = await r.json();
         const token = d.access_token || d.accessToken || (d.session && d.session.access_token);
@@ -194,7 +194,7 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
       }
     });
 
-    // Google login (only when a web client id is configured).
+    // Google login via a custom full-width button (the app's gradient G).
     if (GOOGLE_WEB_CLIENT_ID) {
       document.getElementById('google-wrap').classList.remove('hidden');
       const init = () => {
@@ -204,8 +204,7 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
           callback: async (resp) => {
             try {
               const r = await fetch(`${API_BASE}/auth/social/google`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_token: resp.credential }),
               });
               if (!r.ok) throw new Error('google');
@@ -218,7 +217,9 @@ const GOOGLE_WEB_CLIENT_ID = '249125668898-smfe3o1hht5glrguuh6a74d1kicpcqnl.apps
             }
           },
         });
-        google.accounts.id.renderButton(document.getElementById('google-btn'), { theme: 'filled_black', size: 'large', width: 320 });
+        document.getElementById('google-btn').addEventListener('click', () => {
+          google.accounts.id.prompt();
+        });
       };
       init();
     }
