@@ -1,0 +1,29 @@
+---
+// A phone frame in the home idiom, wrapping a real (cropped) app screenshot.
+// Mirrors PhoneMock's glow/body/notch; the inner fake player UI is replaced
+// by the image. Supports 3D tilt via [data-tilt] (wired in Base.astro).
+export interface Props {
+  src: string;
+  alt: string;
+}
+const { src, alt } = Astro.props;
+---
+
+<div class="relative" data-tilt style="transition: transform 0.2s ease-out; transform-style: preserve-3d;">
+  <!-- layered glows -->
+  <div class="absolute -inset-12 bg-brand/30 blur-[90px] rounded-full animate-pulse-slow" aria-hidden="true"></div>
+  <div class="absolute -inset-4 bg-emerald-400/10 blur-2xl rounded-[3rem]" aria-hidden="true"></div>
+
+  <div
+    class="relative w-[272px] h-[566px] rounded-[2.6rem] bg-gradient-to-b from-ink-700 to-ink-800 border border-white/10 shadow-2xl shadow-brand/20 p-3 animate-float"
+  >
+    <!-- edge highlight -->
+    <div class="absolute inset-0 rounded-[2.6rem] ring-1 ring-inset ring-white/5 pointer-events-none z-10"></div>
+    <!-- notch -->
+    <div class="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-5 bg-ink-900 rounded-full z-20"></div>
+
+    <div class="w-full h-full rounded-[2.1rem] overflow-hidden bg-ink-900">
+      <img src={src} alt={alt} class="w-full h-full object-cover object-top" loading="lazy" />
+    </div>
+  </div>
+</div>
