@@ -62,12 +62,12 @@ where we must retain limited records for legal or security reasons.
 
 ## 5. Third‑party services
 Singlado relies on these providers, each with its own privacy policy:
-- **Google Play Services / Google Sign‑In** — authentication.
-- **Google Play Billing** — purchases.
-- **Google AdMob** — advertising (uses the Advertising ID). Google's policy:
+- **Google Play Services / Google Sign-In**: authentication.
+- **Google Play Billing**: purchases.
+- **Google AdMob**: advertising (uses the Advertising ID). Google's policy:
   https://policies.google.com/privacy . You can learn about ad personalization
   and opt out in your device settings (see Section 6).
-- **Resend** — transactional email delivery (verification / one‑time codes).
+- **Resend**: transactional email delivery (verification / one‑time codes).
 
 ## 6. Your choices
 - **Ads / Advertising ID:** you can reset or limit your Advertising ID, and opt
