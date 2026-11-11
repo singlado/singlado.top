@@ -213,18 +213,19 @@ import DownloadButtons from '../components/DownloadButtons.astro';
             <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
             <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
             <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
-            <span class="ml-3 text-xs text-neutral-500">source-plugin.json</span>
+            <span class="ml-3 text-xs text-neutral-500">manifest.json</span>
           </div>
           <pre class="p-5 text-[12.5px] leading-relaxed overflow-x-auto"><code class="text-neutral-300">{`{
-  `}<span class="text-brand-light">"resolvesBy"</span>{`: "RESOLVES_BY_NAME",
-  `}<span class="text-brand-light">"searchTemplate"</span>{`: "scsearch:{query}",
-  `}<span class="text-brand-light">"itemUrlTemplate"</span>{`:
-    "https://soundcloud.com/{handle}",
-  `}<span class="text-brand-light">"formatSelector"</span>{`:
-    "bestaudio[ext=m4a]/bestaudio",
-  `}<span class="text-brand-light">"tiers"</span>{`: [
-    { "label": "fast" },
-    { "label": "robust", "jsRuntimes": ["deno"] }
+  `}<span class="text-brand-light">"vocabularyVersion"</span>{`: 1,
+  `}<span class="text-brand-light">"search"</span>{`: [
+    { "op": "http.get", "url": "https://api.example.com/s?q={query}" },
+    { "op": "json.parse" },
+    { "op": "map", "from": "results[]", "each": {
+        "title": "name", "handle": "id" } }
+  ],
+  `}<span class="text-brand-light">"resolve"</span>{`: [
+    { "op": "url.template",
+      "template": "https://api.example.com/stream/{handle}" }
   ]
 }`}</code></pre>
         </div>
