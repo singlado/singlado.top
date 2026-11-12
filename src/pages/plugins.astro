@@ -9,6 +9,8 @@ const v1 = [
   ['json.extract', 'Read a value out of JSON by path'],
   ['regex.extract', 'Pull a capture group out of text'],
   ['base64.encode / decode', 'Base64 a value, or decode one'],
+  ['crypto.md5', 'MD5 a string into a lowercase hex digest'],
+  ['random.hex', 'Generate N random hex characters'],
   ['url.template', '{var} substitution into a string'],
   ['url.concat', 'Join templated parts into one string'],
   ['map', 'Shape a list of objects into a list of fields'],
@@ -20,6 +22,7 @@ const later = [
   ['v4', 'filter, walk, extract.local, extract.solved', 'Select from a list, walk a nested structure, run a client-side search or resolve'],
   ['v5', 'expand', 'Run a sub-flow per element and flatten the results'],
   ['v6', 'config and auth', 'Declare user-supplied fields for an authenticated source'],
+  ['v7', 'list.concat', 'Join several result lists into one'],
 ];
 ---
 
@@ -84,6 +87,9 @@ const later = [
       <h2 class="mt-12 text-2xl font-bold text-white">Searching a media server</h2>
       <p class="mt-4 text-neutral-400 leading-relaxed">
         A media server search matches your words against song titles, album names, and artist names, and lists the tracks it finds. To pin a search to one artist, type the title and the artist separated by a <code class="text-brand-light">|</code> or a <code class="text-brand-light">;</code>, in either order, like <code class="text-brand-light">album title | artist</code>. This finds the right record even when the title and the artist never appear together in a single field. Spaces around the separator are ignored.
+      </p>
+      <p class="mt-4 text-neutral-400 leading-relaxed">
+        The <code class="text-brand-light">|</code> / <code class="text-brand-light">;</code> split is available on the <strong class="text-neutral-200">Jellyfin</strong>, <strong class="text-neutral-200">Emby</strong>, and <strong class="text-neutral-200">Plex</strong> media servers. Other sources — including Subsonic-compatible servers (Navidrome and friends) and the community plugins — treat your words as a single plain search.
       </p>
 
       <section class="mt-16 text-center">
