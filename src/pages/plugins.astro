@@ -7,22 +7,23 @@ const v1 = [
   ['http.post', 'POST a URL with a templated body'],
   ['json.parse', 'Parse a JSON string into a map or list'],
   ['json.extract', 'Read a value out of JSON by path'],
+  ['json.string', 'Quote a value as a JSON string'],
   ['regex.extract', 'Pull a capture group out of text'],
   ['base64.encode / decode', 'Base64 a value, or decode one'],
   ['crypto.md5', 'MD5 a string into a lowercase hex digest'],
   ['random.hex', 'Generate N random hex characters'],
   ['url.template', '{var} substitution into a string'],
   ['url.concat', 'Join templated parts into one string'],
+  ['url.encode', 'Percent-encode a value for a URL'],
   ['map', 'Shape a list of objects into a list of fields'],
   ['pick', 'Keep only the named keys of a map'],
-];
-const later = [
-  ['v2', 'extract.server', 'Hand heavy extraction to the backend over a contracted endpoint'],
-  ['v3', 'url.encode, json.string', 'Percent-encode a value, or quote one as a JSON string'],
-  ['v4', 'filter, walk, extract.local, extract.solved', 'Select from a list, walk a nested structure, run a client-side search or resolve'],
-  ['v5', 'expand', 'Run a sub-flow per element and flatten the results'],
-  ['v6', 'config and auth', 'Declare user-supplied fields for an authenticated source'],
-  ['v7', 'list.concat', 'Join several result lists into one'],
+  ['filter', 'Select from a list by a condition'],
+  ['walk', 'Walk a nested structure'],
+  ['expand', 'Run a sub-flow per element and flatten the results'],
+  ['list.concat', 'Join several result lists into one'],
+  ['extract.server', 'Hand heavy extraction to the backend over a contracted endpoint'],
+  ['extract.local', 'The client-side counterpart of extract.server: search or resolve from the app'],
+  ['extract.solved', 'Client-side resolve for a stream URL that needs a solved challenge'],
 ];
 ---
 
@@ -51,7 +52,7 @@ const later = [
 
       <h2 class="mt-12 text-2xl font-bold text-white">The vocabulary</h2>
       <p class="mt-4 text-neutral-400 leading-relaxed">
-        The steps are a closed, versioned set. Your manifest declares a <code class="text-brand-light">vocabularyVersion</code>, and the engine refuses anything outside it. Version 1 is the core:
+        The steps are a closed set. Your manifest declares a <code class="text-brand-light">vocabularyVersion</code>, and the engine refuses anything outside it. There is a single version — <code class="text-brand-light">1</code> — and it holds every step the engine knows:
       </p>
       <div class="mt-5 overflow-hidden rounded-xl border border-white/10">
         {v1.map(([op, desc], i) => (
@@ -61,18 +62,9 @@ const later = [
           </div>
         ))}
       </div>
-      <p class="mt-6 text-neutral-400 leading-relaxed">Later versions add more, each a strict superset of the one before:</p>
-      <div class="mt-4 space-y-3">
-        {later.map(([ver, ops, desc]) => (
-          <div class="rounded-xl border border-white/8 bg-ink-800/60 px-4 py-3">
-            <div class="flex items-baseline gap-3">
-              <span class="text-brand font-bold text-sm">{ver}</span>
-              <code class="text-neutral-200 text-sm">{ops}</code>
-            </div>
-            <p class="mt-1 text-sm text-neutral-500">{desc}</p>
-          </div>
-        ))}
-      </div>
+      <p class="mt-6 text-neutral-400 leading-relaxed">
+        New steps added in the future will raise the version to <code class="text-brand-light">2</code>, <code class="text-brand-light">3</code>, and so on, each a strict superset of the one before. For now, every manifest targets version <code class="text-brand-light">1</code>.
+      </p>
 
       <h2 class="mt-12 text-2xl font-bold text-white">Reading JSON</h2>
       <p class="mt-4 text-neutral-400 leading-relaxed">
