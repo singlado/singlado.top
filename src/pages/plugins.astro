@@ -25,6 +25,336 @@ const v1 = [
   ['extract.local', 'The client-side counterpart of extract.server: search or resolve from the app'],
   ['extract.solved', 'Client-side resolve for a stream URL that needs a solved challenge'],
 ];
+
+// Full per-operation reference, grouped by family. Every parameter, type, and
+// default below is taken verbatim from the engine source — nothing invented.
+// `req` is 'required' / 'optional' / a conditional note. `snippet` is a minimal
+// JSON example of that single op.
+const families = [
+  {
+    name: 'HTTP',
+    note: 'Fetch over the network. The response body is returned as a string for a later json.parse.',
+    ops: [
+      {
+        op: 'http.get',
+        summary: 'GET a URL and return the response body as a string.',
+        params: [
+          ['url', 'required', 'string', '—', 'The URL. {name} placeholders are filled from scope.'],
+          ['headers', 'optional', 'map', 'none', 'Header name → value; each value is stringified and templated. A non-map is ignored.'],
+          ['body', 'optional', 'string', 'none', 'A templated request body. A non-string is ignored.'],
+        ],
+        snippet: `{
+  "op": "http.get",
+  "url": "https://api.example.com/search?q={q}",
+  "headers": { "Accept": "application/json" },
+  "as": "raw"
+}`,
+      },
+      {
+        op: 'http.post',
+        summary: 'POST a URL with a templated body and return the response body as a string.',
+        params: [
+          ['url', 'required', 'string', '—', 'The URL. {name} placeholders are filled from scope.'],
+          ['headers', 'optional', 'map', 'none', 'Header name → value; each value is stringified and templated. A non-map is ignored.'],
+          ['body', 'optional', 'string', 'none', 'A templated request body. A non-string is ignored.'],
+        ],
+        snippet: `{
+  "op": "http.post",
+  "url": "https://api.example.com/login",
+  "headers": { "Content-Type": "application/json" },
+  "body": "{\\"user\\":\\"{username}\\"}",
+  "as": "raw"
+}`,
+      },
+    ],
+  },
+  {
+    name: 'JSON',
+    note: 'Turn a response string into data, then read values out of it by path.',
+    ops: [
+      {
+        op: 'json.parse',
+        summary: 'Parse a JSON string into a map or list.',
+        params: [
+          ['value', 'optional', 'string', 'current', 'The string to parse. If omitted, the previous step’s output is parsed instead.'],
+        ],
+        snippet: `{ "op": "json.parse", "value": "{raw}", "as": "data" }`,
+      },
+      {
+        op: 'json.extract',
+        summary: 'Read a value out of JSON by path.',
+        params: [
+          ['from', 'optional', 'value or {name}', 'current', 'The source. A lone {name} string resolves that scope variable; otherwise the previous step’s output is used.'],
+          ['path', 'required', 'string', '—', 'A JSON path (see “Reading JSON”). End it with ? to get null instead of an error when a key is missing.'],
+        ],
+        snippet: `{ "op": "json.extract", "from": "{data}", "path": "items", "as": "items" }`,
+      },
+      {
+        op: 'json.string',
+        summary: 'Quote a value as a JSON string (e.g. to embed inside a body).',
+        params: [
+          ['value', 'required', 'string', '—', 'The templated value to JSON-encode as a quoted string.'],
+        ],
+        snippet: `{ "op": "json.string", "value": "{title}", "as": "quoted" }`,
+      },
+    ],
+  },
+  {
+    name: 'Text, crypto, random',
+    note: 'Small building blocks for shaping strings and computing values.',
+    ops: [
+      {
+        op: 'regex.extract',
+        summary: 'Pull one capture group out of a string.',
+        params: [
+          ['input', 'optional', 'string', 'current', 'The text to match. If omitted, the previous step’s output is used.'],
+          ['pattern', 'required', 'string', '—', 'The regular expression. The first match is used.'],
+          ['group', 'optional', 'int', '1', 'Which capture group to return. 0 returns the whole match.'],
+        ],
+        snippet: `{ "op": "regex.extract", "input": "{html}", "pattern": "id=(\\d+)", "group": 1, "as": "id" }`,
+      },
+      {
+        op: 'base64.encode',
+        summary: 'Base64-encode a value.',
+        params: [['value', 'required', 'string', '—', 'The templated value to encode.']],
+        snippet: `{ "op": "base64.encode", "value": "{user}:{pass}", "as": "auth" }`,
+      },
+      {
+        op: 'base64.decode',
+        summary: 'Decode a Base64 value back to text.',
+        params: [['value', 'required', 'string', '—', 'The templated value to decode.']],
+        snippet: `{ "op": "base64.decode", "value": "{token}", "as": "plain" }`,
+      },
+      {
+        op: 'crypto.md5',
+        summary: 'MD5 a string into a lowercase hex digest.',
+        params: [['value', 'required', 'string', '—', 'The templated value to hash.']],
+        snippet: `{ "op": "crypto.md5", "value": "{password}{salt}", "as": "token" }`,
+      },
+      {
+        op: 'random.hex',
+        summary: 'Generate N random hexadecimal characters.',
+        params: [['length', 'optional', 'int', '16', 'How many hex characters to produce.']],
+        snippet: `{ "op": "random.hex", "length": 16, "as": "salt" }`,
+      },
+    ],
+  },
+  {
+    name: 'URL',
+    note: 'Compose strings — most often request URLs — from scope values.',
+    ops: [
+      {
+        op: 'url.template',
+        summary: 'Substitute {name} references into a string.',
+        params: [['template', 'required', 'string', '—', 'The string, with {name} placeholders filled from scope.']],
+        snippet: `{ "op": "url.template", "template": "https://api.example.com/{q}", "as": "url" }`,
+      },
+      {
+        op: 'url.concat',
+        summary: 'Join several templated parts into one string.',
+        params: [['parts', 'required', 'list', '—', 'Items are stringified, templated, and joined in order with no separator.']],
+        snippet: `{ "op": "url.concat", "parts": ["https://api/", "{q}", "&page={offset}"], "as": "url" }`,
+      },
+      {
+        op: 'url.encode',
+        summary: 'Percent-encode a value for use inside a URL.',
+        params: [['value', 'required', 'string', '—', 'The templated value (spaces become %20).']],
+        snippet: `{ "op": "url.encode", "value": "{query}", "as": "q" }`,
+      },
+    ],
+  },
+  {
+    name: 'Shape',
+    note: 'Turn raw JSON into the list of results the app understands.',
+    ops: [
+      {
+        op: 'map',
+        summary: 'Shape a list of objects into a list of result fields.',
+        params: [
+          ['from', 'optional', 'value or {name}', 'current', 'The list to shape. A lone {name} resolves that scope variable; otherwise the previous output is used.'],
+          ['each', 'required', 'map', '—', 'Output field → path. A value can also be { "path": "…", "divide": N } to divide a number (e.g. ms → seconds) and floor it.'],
+        ],
+        snippet: `{
+  "op": "map",
+  "from": "{items}",
+  "each": {
+    "handle": "id",
+    "title": "name",
+    "artist": "artist.name?",
+    "durationSec": { "path": "runtimeMs", "divide": 1000 }
+  }
+}`,
+      },
+      {
+        op: 'pick',
+        summary: 'Keep only the named keys of a map.',
+        params: [['fields', 'required', 'list', '—', 'The keys to keep; absent keys are dropped.']],
+        snippet: `{ "op": "pick", "fields": ["handle", "title", "artist"] }`,
+      },
+      {
+        op: 'filter',
+        summary: 'Select items from a list by a condition.',
+        params: [
+          ['where', 'required', 'map', '—', 'Field → operator map. Operators: equals, startsWith, exists. An item passes only if every condition passes.'],
+          ['first', 'optional', 'bool', 'false', 'When exactly true, return only the first match (or null) instead of the whole filtered list.'],
+        ],
+        snippet: `{
+  "op": "filter",
+  "where": { "type": { "equals": "audio" }, "url": { "exists": true } },
+  "first": true
+}`,
+      },
+      {
+        op: 'walk',
+        summary: 'Recursively collect every map that contains a given key.',
+        params: [
+          ['key', 'required', 'string', '—', 'Collect maps that have this key, anywhere in the tree.'],
+          ['limit', 'optional', 'int', '50', 'Maximum number of maps to collect.'],
+        ],
+        snippet: `{ "op": "walk", "key": "trackId", "limit": 100, "as": "tracks" }`,
+      },
+      {
+        op: 'expand',
+        summary: 'Run a sub-pipeline per element and flatten all the results into one list.',
+        params: [
+          ['from', 'optional', 'value or {name}', 'current', 'The source list. A lone {name} resolves that scope variable; otherwise the previous output is used.'],
+          ['as', 'optional', 'string', 'none', 'The scope name each element is bound to inside the sub-pipeline (step-level field, like on any op).'],
+          ['each', 'required', 'list', '—', 'The sub-pipeline: a list of steps run for every element.'],
+          ['max', 'optional', 'int', '12', 'Maximum number of elements processed.'],
+          ['timeoutMs', 'optional', 'int', '5000', 'Per-element timeout in milliseconds; an element that errors or times out simply contributes nothing.'],
+          ['parallel', 'optional', 'bool', 'true', 'Run elements in parallel unless set to false.'],
+        ],
+        snippet: `{
+  "op": "expand",
+  "from": "{albums}",
+  "as": "album",
+  "each": [
+    { "op": "http.get", "url": "https://api/albums/{album.id}/tracks", "as": "raw" },
+    { "op": "json.parse", "value": "{raw}", "as": "d" },
+    { "op": "map", "from": "{d}", "each": { "handle": "id", "title": "name" } }
+  ],
+  "as": "tracks"
+}`,
+      },
+    ],
+  },
+  {
+    name: 'List',
+    note: 'Combine lists the pipeline has already built.',
+    ops: [
+      {
+        op: 'list.concat',
+        summary: 'Join several result lists into one.',
+        params: [['lists', 'required', 'list of {name}', '—', 'Each item must be exactly a {name} reference to a list in scope; they are concatenated in order.']],
+        snippet: `{ "op": "list.concat", "lists": ["{songs}", "{albumTracks}"], "as": "results" }`,
+      },
+    ],
+  },
+  {
+    name: 'Extract',
+    note: 'Delegate heavy or awkward extraction to a dedicated endpoint — the app’s backend, or the plugin’s own service.',
+    ops: [
+      {
+        op: 'extract.server',
+        summary: 'Hand a search or resolve to the app backend over a contracted endpoint.',
+        params: [
+          ['mode', 'required', 'string', '—', 'Either "search" or "resolve".'],
+          ['spec', 'required', 'map or {name}', '—', 'Opaque data forwarded to the backend. A lone {name} resolves a scope value.'],
+          ['preferM4a', 'optional', 'bool', 'omitted', 'Forwarded to the backend only when a boolean.'],
+        ],
+        snippet: `{ "op": "extract.server", "mode": "search", "spec": { "provider": "example" } }`,
+      },
+      {
+        op: 'extract.local',
+        summary: 'The client-side counterpart of extract.server: call the plugin’s own API to search or resolve.',
+        params: [
+          ['mode', 'required', 'string', '—', 'Either "search" or "resolve".'],
+          ['url', 'required', 'string', '—', 'The plugin API URL (templated).'],
+          ['headers', 'optional', 'map', 'none', 'Templated headers; a non-map is ignored.'],
+          ['bodyTemplate', 'optional', 'string', 'none', 'A templated request body; a non-string is ignored.'],
+          ['statusPath', 'optional', 'string', 'none', 'If set, this path in the response must equal "OK".'],
+          ['resultsKey', 'search', 'string', '—', 'Collect response maps containing this key (search mode).'],
+          ['map', 'search', 'map', '—', 'Output field → path for each result (same shape as the map op, search mode).'],
+          ['cursorFrom', 'optional', 'string', 'none', 'Read a next-page token from this path and carry it forward (search mode).'],
+          ['formatsPath', 'resolve', 'string', '—', 'Path to the list of playable formats (resolve mode).'],
+          ['audioFilter', 'optional', 'map', 'first', 'A where-style map selecting the format; without it the first format is used (resolve mode).'],
+          ['urlField', 'resolve', 'string', '—', 'Key on the chosen format holding its stream URL (resolve mode).'],
+        ],
+        snippet: `{
+  "op": "extract.local",
+  "mode": "resolve",
+  "url": "https://plugin.example.com/resolve?id={handle}",
+  "formatsPath": "formats",
+  "audioFilter": { "mime": { "startsWith": "audio/" } },
+  "urlField": "url"
+}`,
+      },
+      {
+        op: 'extract.solved',
+        summary: 'Client-side resolve for a stream URL that first needs a challenge solved by the backend.',
+        params: [
+          ['url', 'required', 'string', '—', 'The player API URL (templated).'],
+          ['headers', 'optional', 'map', 'none', 'Templated headers; a non-map is ignored.'],
+          ['bodyTemplate', 'optional', 'string', 'none', 'A templated request body; a non-string is ignored.'],
+          ['statusPath', 'optional', 'string', 'none', 'If set, this path in the response must equal "OK".'],
+          ['formatsPath', 'required', 'string', '—', 'Path to the list of playable formats.'],
+          ['audioFilter', 'optional', 'map', 'first', 'A where-style map selecting the format; without it the first format is used.'],
+          ['cipherField', 'optional', 'string', 'url', 'Field holding the signature-cipher string; if absent, the format’s url is used directly.'],
+          ['contentBinding', 'optional', 'string', 'omitted', 'Templated value sent to the solver as content binding.'],
+          ['playerUrl', 'required', 'string', '—', 'The player URL (templated) sent to the backend solver.'],
+        ],
+        snippet: `{
+  "op": "extract.solved",
+  "url": "https://plugin.example.com/player?id={handle}",
+  "playerUrl": "https://plugin.example.com/watch?v={handle}",
+  "formatsPath": "streamingData.formats",
+  "cipherField": "signatureCipher"
+}`,
+      },
+    ],
+  },
+];
+
+// A complete, deliberately generic manifest: search + resolve against an
+// imaginary REST service, showing how steps chain through `as` / scope.
+const fullExample = `{
+  "id": "example.com",
+  "name": "Example",
+  "vocabularyVersion": 1,
+
+  "search": [
+    { "op": "url.encode", "value": "{query}", "as": "q" },
+    {
+      "op": "url.template",
+      "template": "https://api.example.com/search?q={q}&limit={limit}&offset={offset}",
+      "as": "url"
+    },
+    { "op": "http.get", "url": "{url}", "headers": { "Accept": "application/json" }, "as": "raw" },
+    { "op": "json.parse", "value": "{raw}", "as": "data" },
+    { "op": "json.extract", "from": "{data}", "path": "results", "as": "items" },
+    {
+      "op": "map",
+      "from": "{items}",
+      "each": {
+        "handle": "id",
+        "title": "title",
+        "artist": "artist?",
+        "durationSec": { "path": "durationMs", "divide": 1000 }
+      }
+    }
+  ],
+
+  "resolve": [
+    {
+      "op": "url.template",
+      "template": "https://api.example.com/tracks/{handle}/stream",
+      "as": "url"
+    },
+    { "op": "http.get", "url": "{url}", "as": "raw" },
+    { "op": "json.parse", "value": "{raw}", "as": "data" },
+    { "op": "json.extract", "from": "{data}", "path": "streamUrl" }
+  ]
+}`;
 ---
 
 <Base title="Plugins | Singlado" description="Add a source to Singlado with a declarative manifest. Data, not code.">
@@ -65,6 +395,79 @@ const v1 = [
       <p class="mt-6 text-neutral-400 leading-relaxed">
         New steps added in the future will raise the version to <code class="text-brand-light">2</code>, <code class="text-brand-light">3</code>, and so on, each a strict superset of the one before. For now, every manifest targets version <code class="text-brand-light">1</code>.
       </p>
+
+      <h2 class="mt-16 text-2xl font-bold text-white">Every step, in detail</h2>
+      <p class="mt-4 text-neutral-400 leading-relaxed">
+        Open any step for its parameters and a small example. A few rules hold throughout: a step’s <code class="text-brand-light">as</code> field names its result so a later step can reference it with <code class="text-brand-light">{'{name}'}</code>; a <code class="text-brand-light">{'{name}'}</code> placeholder is replaced with that value; and some steps fall back to the previous step’s output when their input field is omitted. Required parameters are marked, everything else is optional.
+      </p>
+
+      <div class="mt-8 space-y-10">
+        {families.map((family) => (
+          <section>
+            <div class="flex items-baseline gap-3">
+              <h3 class="text-lg font-bold text-white">{family.name}</h3>
+            </div>
+            <p class="mt-1 text-sm text-neutral-500 leading-relaxed">{family.note}</p>
+
+            <div class="mt-4 space-y-2">
+              {family.ops.map((o) => (
+                <details class="group rounded-xl border border-white/10 bg-ink-800/40 overflow-hidden">
+                  <summary class="flex cursor-pointer list-none items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors">
+                    <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-neutral-500 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                      <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <code class="text-brand-light text-sm font-semibold shrink-0">{o.op}</code>
+                    <span class="text-sm text-neutral-400">{o.summary}</span>
+                  </summary>
+
+                  <div class="border-t border-white/8 px-4 py-4">
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-left text-sm">
+                        <thead>
+                          <tr class="text-[11px] uppercase tracking-wide text-neutral-500">
+                            <th class="pb-2 pr-4 font-semibold">Parameter</th>
+                            <th class="pb-2 pr-4 font-semibold">Required</th>
+                            <th class="pb-2 pr-4 font-semibold">Type</th>
+                            <th class="pb-2 pr-4 font-semibold">Default</th>
+                            <th class="pb-2 font-semibold">Meaning</th>
+                          </tr>
+                        </thead>
+                        <tbody class="align-top">
+                          {o.params.map(([pname, req, type, def, meaning]) => (
+                            <tr class="border-t border-white/5">
+                              <td class="py-2 pr-4"><code class="text-brand-light">{pname}</code></td>
+                              <td class="py-2 pr-4 whitespace-nowrap">
+                                <span class={
+                                  req === 'required'
+                                    ? 'text-brand'
+                                    : req === 'optional'
+                                      ? 'text-neutral-500'
+                                      : 'text-amber-400/80'
+                                }>{req}</span>
+                              </td>
+                              <td class="py-2 pr-4 text-neutral-400 whitespace-nowrap">{type}</td>
+                              <td class="py-2 pr-4 text-neutral-500 whitespace-nowrap">{def}</td>
+                              <td class="py-2 text-neutral-400">{meaning}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <pre class="mt-4 overflow-x-auto rounded-lg border border-white/10 bg-ink-900/70 p-4 text-[13px] leading-relaxed"><code class="text-neutral-300">{o.snippet}</code></pre>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <h2 class="mt-16 text-2xl font-bold text-white">A complete manifest</h2>
+      <p class="mt-4 text-neutral-400 leading-relaxed">
+        Here is a whole plugin for an imaginary REST service, start to finish. <strong class="text-neutral-200">search</strong> encodes the query, builds a URL, fetches it, parses the JSON, pulls out the results list, and shapes each one into a result. <strong class="text-neutral-200">resolve</strong> takes the <code class="text-brand-light">handle</code> of the pick and fetches its stream URL. Each step’s <code class="text-brand-light">as</code> feeds the next.
+      </p>
+      <pre class="mt-5 overflow-x-auto rounded-xl border border-white/10 bg-ink-900/70 p-5 text-[13px] leading-relaxed"><code class="text-neutral-300">{fullExample}</code></pre>
 
       <h2 class="mt-12 text-2xl font-bold text-white">Reading JSON</h2>
       <p class="mt-4 text-neutral-400 leading-relaxed">
