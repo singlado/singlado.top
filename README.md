@@ -1,4 +1,6 @@
-# Singlado
+<img width="1024" height="500" alt="singlado-feature-1024x500" src="https://github.com/user-attachments/assets/49d99c5c-25e6-44e0-b7cd-ae00ea984ce7" />
+
+# singlado.
 
 **[singlado.top](https://singlado.top)** — a music player that ships with no catalog of its own. You bring the sources.
 
