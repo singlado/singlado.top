@@ -4,6 +4,7 @@ import Nav from '../components/Nav.astro';
 import FeatureRow from '../components/FeatureRow.astro';
 import ShotPhone from '../components/ShotPhone.astro';
 import CarMock from '../components/CarMock.astro';
+import DesktopMock from '../components/DesktopMock.astro';
 ---
 
 <Base>
@@ -40,7 +41,7 @@ import CarMock from '../components/CarMock.astro';
   <FeatureRow
     eyebrow="Playback"
     title={`A player that gets<br/><span class="text-gradient">out of the way</span>.`}
-    body="Tap a track and the queue builds itself. Shuffle, repeat, autoplay when it ends. A seek bar that uses the real track length, so dragging lands where you expect. Loudness is leveled across sources automatically."
+    body="Tap a track and the queue builds itself. Shuffle, repeat, autoplay when it ends. A seek bar that uses the real track length, so dragging lands where you expect. Loudness is leveled across sources automatically. Cast to a Chromecast or Nest and it keeps playing from where it was, or hand it to a Bluetooth or wired output with Play on…"
   >
     <ShotPhone src="/shots/player.png" alt="Singlado full-screen player" />
   </FeatureRow>
@@ -52,6 +53,15 @@ import CarMock from '../components/CarMock.astro';
     flip={true}
   >
     <CarMock src="/shots/auto-browse.png" alt="Singlado on Android Auto" />
+  </FeatureRow>
+
+  <!-- Desktop screenshot: macOS app. -->
+  <FeatureRow
+    eyebrow="Every platform"
+    title={`Phone, car,<br/>and <span class="text-gradient">desktop</span>.`}
+    body="The same player on Android, Linux, Windows and macOS. One account, your library and history following you across all of them."
+  >
+    <DesktopMock src="/shots/desktop.png" alt="Singlado on macOS desktop" />
   </FeatureRow>
 
   <FeatureRow

@@ -1,0 +1,33 @@
+---
+// A desktop window frame wrapping a real app screenshot, in the same glow/body
+// idiom as PhoneMock/ShotPhone but landscape. Supports 3D tilt via [data-tilt].
+export interface Props {
+  src: string;
+  alt: string;
+}
+const { src, alt } = Astro.props;
+---
+
+<div class="relative" data-tilt style="transition: transform 0.2s ease-out; transform-style: preserve-3d;">
+  <!-- layered glows -->
+  <div class="absolute -inset-12 bg-brand/30 blur-[90px] rounded-full animate-pulse-slow" aria-hidden="true"></div>
+  <div class="absolute -inset-4 bg-emerald-400/10 blur-2xl rounded-[2rem]" aria-hidden="true"></div>
+
+  <div
+    class="relative w-full max-w-[640px] rounded-2xl bg-gradient-to-b from-ink-700 to-ink-800 border border-white/10 shadow-2xl shadow-brand/20 p-2.5 animate-float"
+  >
+    <!-- edge highlight -->
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5 pointer-events-none z-10"></div>
+
+    <!-- title bar with traffic lights -->
+    <div class="flex items-center gap-2 px-2 pb-2.5 pt-1">
+      <span class="w-3 h-3 rounded-full bg-[#ff5f57]"></span>
+      <span class="w-3 h-3 rounded-full bg-[#febc2e]"></span>
+      <span class="w-3 h-3 rounded-full bg-[#28c840]"></span>
+    </div>
+
+    <div class="w-full rounded-xl overflow-hidden bg-ink-900">
+      <img src={src} alt={alt} class="w-full h-auto object-cover object-top" loading="lazy" />
+    </div>
+  </div>
+</div>
